@@ -826,5 +826,44 @@ class TestSupplementalCollection(unittest.TestCase):
         self.assertGreater(len(knuth_entries), 0, "Shelley Knuth must be in PRIORITY_PIS")
         self.assertEqual(knuth_entries[0][2], "CU Boulder")
 
+    def test_phase3_catches_non_rmacc_awardee_where_priority_pi_is_copi(self):
+        """Phase 3 adds a grant from a non-RMACC awardee when the priority PI is listed as co-PI."""
+        grant = _make_award("COPI001", "University of Michigan")
+        grant["piFirstName"] = "Other"
+        grant["piLastName"] = "Person"
+        grant["coPDPI"] = "Shelley Knuth shelley.knuth@colorado.edu"
+        self._run(phase3=[grant])
+        cur = self.conn.execute("SELECT COUNT(*) FROM grants WHERE award_id = 'COPI001'")
+        self.assertEqual(cur.fetchone()[0], 1)
+
+    def test_phase3_copi_grant_linked_to_priority_pi_institution(self):
+        """Grant added via co-PI path in Phase 3 is linked to the priority PI's home institution."""
+        grant = _make_award("COPI002", "University of Michigan")
+        grant["piFirstName"] = "Other"
+        grant["piLastName"] = "Person"
+        grant["coPDPI"] = "Shelley Knuth shelley.knuth@colorado.edu"
+        self._run(phase3=[grant])
+        self.conn.commit()
+        cur = self.conn.execute("""
+            SELECT i.abbr, gi.role FROM grant_institutions gi
+            JOIN grants g ON gi.grant_id = g.id
+            JOIN institutions i ON gi.institution_id = i.id
+            WHERE g.award_id = 'COPI002'
+        """)
+        roles = {r[0]: r[1] for r in cur.fetchall()}
+        self.assertIn("CU Boulder", roles)
+        self.assertEqual(roles["CU Boulder"], "copi_institution")
+
+    def test_phase3_non_rmacc_grant_not_added_when_priority_pi_not_copi(self):
+        """Non-RMACC awardee grant is not added if the priority PI doesn't appear in co-PIs."""
+        grant = _make_award("COPI003", "University of Michigan")
+        grant["piFirstName"] = "Other"
+        grant["piLastName"] = "Person"
+        grant["coPDPI"] = "Someone Else someone@umich.edu"
+        self._run(phase3=[grant])
+        cur = self.conn.execute("SELECT COUNT(*) FROM grants WHERE award_id = 'COPI003'")
+        self.assertEqual(cur.fetchone()[0], 0)
+
+
 if __name__ == "__main__":
     unittest.main(verbosity=2)

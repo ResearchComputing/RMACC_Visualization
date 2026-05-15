@@ -518,6 +518,65 @@ def _process_award(conn, cursor, inst_lookup, existing, award):
     return added
 
 
+def _process_priority_pi_copi_award(conn, cursor, inst_lookup, existing, award, pi_last, pi_inst):
+    """Insert a grant from a non-RMACC awardee where a priority PI appears as co-PI.
+
+    Called in Phase 3 after _process_award() rejects the award (non-RMACC awardee).
+    Links the grant to pi_inst as 'copi_institution' so it appears in the visualization
+    connected to the priority PI's home institution.
+    Returns True if a new grant was inserted.
+    """
+    award_id = award.get("id", "")
+    if not award_id or award_id in existing:
+        return False
+
+    co_pis = award.get("coPDPI", "") or ""
+    if isinstance(co_pis, list):
+        co_pis = "; ".join(co_pis)
+
+    if pi_last.lower() not in co_pis.lower():
+        return False
+
+    inst_id = inst_lookup.get(pi_inst)
+    if not inst_id:
+        return False
+
+    try:
+        cursor.execute("""
+            INSERT INTO grants
+                (award_id, title, amount, start_date, end_date,
+                 pi_first_name, pi_last_name, co_pis,
+                 agency, office, program, source_url)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, 'NSF', 'OAC', ?,
+                    'https://www.nsf.gov/awardsearch/showAward?AWD_ID=' || ?)
+        """, (
+            award_id,
+            award.get("title", ""),
+            int(award.get("estimatedTotalAmt", 0) or 0),
+            award.get("startDate", ""),
+            award.get("expDate", ""),
+            award.get("piFirstName", ""),
+            award.get("piLastName", ""),
+            co_pis,
+            award.get("fundProgramName", ""),
+            award_id,
+        ))
+        existing.add(award_id)
+    except sqlite3.IntegrityError:
+        return False
+
+    grant_row = cursor.execute(
+        "SELECT id FROM grants WHERE award_id = ? AND agency = 'NSF'", (award_id,)
+    ).fetchone()
+    if grant_row:
+        cursor.execute(
+            "INSERT OR IGNORE INTO grant_institutions "
+            "(grant_id, institution_id, role) VALUES (?, ?, 'copi_institution')",
+            (grant_row[0], inst_id),
+        )
+    return True
+
+
 # ─────────────────────────────────────────────────────────────────
 # MAIN COLLECTOR
 # ─────────────────────────────────────────────────────────────────
@@ -613,13 +672,19 @@ def collect_grants(conn, window_start="05/01/2025", window_end="04/30/2026"):
     # ── Phase 3: Priority PI name searches ────────────────────────
     print(f"  Phase 3: Priority PI searches ({len(PRIORITY_PIS)} PIs)...", flush=True)
     phase3_new = 0
-    for pi_last, pi_first, _pi_inst in PRIORITY_PIS:
+    for pi_last, pi_first, pi_inst in PRIORITY_PIS:
         print(f"  Searching PI: {pi_first} {pi_last}", flush=True)
         pi_awards = query_nsf({**BASE_PARAMS, "piLastName": pi_last, "piFirstName": pi_first},
                               label=f"[P3:{pi_last}]")
         new_here = 0
         for award in pi_awards:
-            if _process_award(conn, cursor, inst_lookup, existing, award):
+            award_id = award.get("id", "")
+            added = _process_award(conn, cursor, inst_lookup, existing, award)
+            if not added and award_id and award_id not in existing:
+                # Non-RMACC awardee: check if priority PI appears as co-PI
+                added = _process_priority_pi_copi_award(
+                    conn, cursor, inst_lookup, existing, award, pi_last, pi_inst)
+            if added:
                 new_here += 1
                 phase3_new += 1
                 print(f"    [NEW:{pi_first} {pi_last}] {award.get('title','')[:60]}", flush=True)
