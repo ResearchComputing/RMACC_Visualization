@@ -587,7 +587,7 @@ class TestCollectGrantsCopiDetection(unittest.TestCase):
     def test_copi_institution_linked_with_copi_role(self):
         """When a grant has a co-PI from another RMACC institution, that link uses role='copi_institution'."""
         award = _make_award("COPI001", "Colorado State University")
-        award["coPDPI"] = "Shelley Knuth shelley.knuth@colorado.edu"
+        award["coPDPI"] = "Jane Smith j.smith@colorado.edu"
         self._run_collect([[award]])
 
         roles = self._roles_for("COPI001")
@@ -712,27 +712,29 @@ class TestProcessAward(unittest.TestCase):
 
     def test_copi_link_created_for_rmacc_copi(self):
         award = _make_award("PA005", "Colorado State University")
-        award["coPDPI"] = "Shelley Knuth shelley.knuth@colorado.edu"
+        award["coPDPI"] = "Jane Smith j.smith@colorado.edu"
         _process_award(self.conn, self.cursor, self.inst_lookup, self.existing, award)
         self.conn.commit()
         roles = self._roles_for("PA005")
         self.assertIn("CU Boulder", roles)
         self.assertEqual(roles["CU Boulder"], "copi_institution")
 
+    @patch('rmacc_nsf_collector.PRIORITY_PIS', [("Doe", "Jane", "CU Boulder")])
     def test_priority_pi_linked_as_copi_by_name(self):
         """When a priority PI's last name appears in co_pis, their institution is linked even if email doesn't resolve."""
         award = _make_award("PP001", "Colorado State University")
-        award["coPDPI"] = "Shelley Knuth shelley.knuth@someunresolvable.org"
+        award["coPDPI"] = "Jane Doe jane.doe@someunresolvable.org"
         _process_award(self.conn, self.cursor, self.inst_lookup, self.existing, award)
         self.conn.commit()
         roles = self._roles_for("PP001")
-        self.assertIn("CU Boulder", roles, "CU Boulder should be linked via Knuth name match")
+        self.assertIn("CU Boulder", roles, "CU Boulder should be linked via priority PI name match")
         self.assertEqual(roles["CU Boulder"], "copi_institution")
 
+    @patch('rmacc_nsf_collector.PRIORITY_PIS', [("Doe", "Jane", "CU Boulder")])
     def test_priority_pi_name_match_skipped_when_awardee(self):
         """Name-based match should not self-link when priority PI's institution is the awardee."""
         award = _make_award("PP002", "University of Colorado Boulder")
-        award["coPDPI"] = "Shelley Knuth shelley.knuth@someunresolvable.org"
+        award["coPDPI"] = "Jane Doe jane.doe@someunresolvable.org"
         _process_award(self.conn, self.cursor, self.inst_lookup, self.existing, award)
         self.conn.commit()
         roles = self._roles_for("PP002")
@@ -804,8 +806,8 @@ class TestSupplementalCollection(unittest.TestCase):
     def test_priority_pi_search_catches_missed_grant(self):
         """Grant missed by Phase 1 and Phase 2 is caught by Phase 3 PI name search."""
         grant = _make_award("PI001", "University of Colorado Boulder")
-        grant["piFirstName"] = "Shelley"
-        grant["piLastName"] = "Knuth"
+        grant["piFirstName"] = "Jane"
+        grant["piLastName"] = "Doe"
         self._run(phase3=[grant])
         cur = self.conn.execute("SELECT COUNT(*) FROM grants WHERE award_id = 'PI001'")
         self.assertEqual(cur.fetchone()[0], 1)
@@ -820,28 +822,34 @@ class TestSupplementalCollection(unittest.TestCase):
         cur = self.conn.execute("SELECT COUNT(*) FROM grants WHERE award_id = 'MULTI001'")
         self.assertEqual(cur.fetchone()[0], 1)
 
-    def test_priority_pis_includes_knuth(self):
-        """PRIORITY_PIS must include Shelley Knuth with CU Boulder as home institution."""
-        knuth_entries = [(l, f, inst) for l, f, inst in PRIORITY_PIS if l == "Knuth" and f == "Shelley"]
-        self.assertGreater(len(knuth_entries), 0, "Shelley Knuth must be in PRIORITY_PIS")
-        self.assertEqual(knuth_entries[0][2], "CU Boulder")
+    def test_priority_pis_have_required_structure(self):
+        """PRIORITY_PIS must be non-empty; each entry must be a (last, first, institution_abbr) 3-tuple."""
+        self.assertGreater(len(PRIORITY_PIS), 0, "PRIORITY_PIS must not be empty")
+        valid_abbrs = {m[1] for m in RMACC_MEMBERS}
+        for entry in PRIORITY_PIS:
+            self.assertEqual(len(entry), 3, f"Each PRIORITY_PIS entry must be a 3-tuple: {entry}")
+            last, first, inst = entry
+            self.assertTrue(last and first, f"PI name must be non-empty: {entry}")
+            self.assertIn(inst, valid_abbrs, f"Home institution '{inst}' not found in RMACC_MEMBERS")
 
+    @patch('rmacc_nsf_collector.PRIORITY_PIS', [("Doe", "Jane", "CU Boulder")])
     def test_phase3_catches_non_rmacc_awardee_where_priority_pi_is_copi(self):
         """Phase 3 adds a grant from a non-RMACC awardee when the priority PI is listed as co-PI."""
         grant = _make_award("COPI001", "University of Michigan")
         grant["piFirstName"] = "Other"
         grant["piLastName"] = "Person"
-        grant["coPDPI"] = "Shelley Knuth shelley.knuth@colorado.edu"
+        grant["coPDPI"] = "Jane Doe jane.doe@someunresolvable.org"
         self._run(phase3=[grant])
         cur = self.conn.execute("SELECT COUNT(*) FROM grants WHERE award_id = 'COPI001'")
         self.assertEqual(cur.fetchone()[0], 1)
 
+    @patch('rmacc_nsf_collector.PRIORITY_PIS', [("Doe", "Jane", "CU Boulder")])
     def test_phase3_copi_grant_linked_to_priority_pi_institution(self):
         """Grant added via co-PI path in Phase 3 is linked to the priority PI's home institution."""
         grant = _make_award("COPI002", "University of Michigan")
         grant["piFirstName"] = "Other"
         grant["piLastName"] = "Person"
-        grant["coPDPI"] = "Shelley Knuth shelley.knuth@colorado.edu"
+        grant["coPDPI"] = "Jane Doe jane.doe@someunresolvable.org"
         self._run(phase3=[grant])
         self.conn.commit()
         cur = self.conn.execute("""

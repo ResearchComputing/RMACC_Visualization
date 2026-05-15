@@ -137,7 +137,9 @@ NAME_ALIASES = {
 # PI names guaranteed to be captured by a targeted PI-name search in Phase 3.
 # Add any PI whose grants must not be missed (format: (last_name, first_name)).
 PRIORITY_PIS = [
-    ("Knuth", "Shelley", "CU Boulder"),
+    ("Knuth",     "Shelley", "CU Boulder"),
+    ("Romanella", "Alana",   "CU Boulder"),
+    ("Ramsey",    "Candace", "CU Boulder"),
 ]
 
 # Email domain → RMACC abbreviation (root domain only; subdomains are stripped before lookup)
