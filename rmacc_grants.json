@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-05-15T23:07:06.902613",
+  "generated_at": "2026-05-15T23:35:16.387846",
   "institutions": [
     {
       "id": 1,
@@ -735,22 +735,27 @@
       ]
     },
     {
-      "award_id": "2247173",
-      "title": "CAREER: Synergistic physics-based and deep learning cardiovascular flow modeling",
-      "amount": 507642,
+      "award_id": "2226397",
+      "title": "Collaborative Research: Cross-Cutting Improvements: FAIR Facilities and Instruments: Enabling transparency, reproducibility, and equity through persistent identifiers",
+      "amount": 125179,
       "start_date": "10/01/2022",
-      "end_date": "09/30/2027",
-      "pi": "Amirhossein Arzani",
-      "co_pis": "",
+      "end_date": "09/30/2026",
+      "pi": "Andrew Johnson",
+      "co_pis": "Claudius Mundoma claudius.mundoma@colorado.edu",
       "agency": "NSF",
       "office": "OAC",
-      "program": "CAREER: FACULTY EARLY CAR DEV",
-      "source_url": "https://www.nsf.gov/awardsearch/showAward?AWD_ID=2247173",
+      "program": "NSF Public Access Initiative, EarthCube",
+      "source_url": "https://www.nsf.gov/awardsearch/showAward?AWD_ID=2226397",
       "institutions": [
         {
-          "abbr": "UU",
-          "name": "University of Utah",
+          "abbr": "CU Boulder",
+          "name": "University of Colorado Boulder",
           "role": "awardee"
+        },
+        {
+          "abbr": "NCAR",
+          "name": "NCAR",
+          "role": "collaborator"
         }
       ]
     },
@@ -775,27 +780,22 @@
       ]
     },
     {
-      "award_id": "2226397",
-      "title": "Collaborative Research: Cross-Cutting Improvements: FAIR Facilities and Instruments: Enabling transparency, reproducibility, and equity through persistent identifiers",
-      "amount": 125179,
+      "award_id": "2247173",
+      "title": "CAREER: Synergistic physics-based and deep learning cardiovascular flow modeling",
+      "amount": 507642,
       "start_date": "10/01/2022",
-      "end_date": "09/30/2026",
-      "pi": "Andrew Johnson",
-      "co_pis": "Claudius Mundoma claudius.mundoma@colorado.edu",
+      "end_date": "09/30/2027",
+      "pi": "Amirhossein Arzani",
+      "co_pis": "",
       "agency": "NSF",
       "office": "OAC",
-      "program": "NSF Public Access Initiative, EarthCube",
-      "source_url": "https://www.nsf.gov/awardsearch/showAward?AWD_ID=2226397",
+      "program": "CAREER: FACULTY EARLY CAR DEV",
+      "source_url": "https://www.nsf.gov/awardsearch/showAward?AWD_ID=2247173",
       "institutions": [
         {
-          "abbr": "CU Boulder",
-          "name": "University of Colorado Boulder",
+          "abbr": "UU",
+          "name": "University of Utah",
           "role": "awardee"
-        },
-        {
-          "abbr": "NCAR",
-          "name": "NCAR",
-          "role": "collaborator"
         }
       ]
     },
@@ -935,26 +935,6 @@
       ]
     },
     {
-      "award_id": "2118201",
-      "title": "HDR Institute: Institute for Data Driven Dynamical Design",
-      "amount": 15540749,
-      "start_date": "10/01/2021",
-      "end_date": "09/30/2027",
-      "pi": "Eric Toberer",
-      "co_pis": "Ryan P Adams rpa@princeton.edu; Alvitta Ottley alvitta@wustl.edu; Steven A Lopez s.lopez@northeastern.edu; Adji Bousso Dieng adji@princeton.edu",
-      "agency": "NSF",
-      "office": "OAC",
-      "program": "HDR-Harnessing the Data Revolu, TRIPODS Transdisciplinary Rese, DMR SHORT TERM SUPPORT, PROJECTS",
-      "source_url": "https://www.nsf.gov/awardsearch/showAward?AWD_ID=2118201",
-      "institutions": [
-        {
-          "abbr": "Mines",
-          "name": "Colorado School of Mines",
-          "role": "awardee"
-        }
-      ]
-    },
-    {
       "award_id": "2138811",
       "title": "OAC: Piloting the National Science Data Fabric: A Platform Agnostic Testbed for Democratizing Data Delivery",
       "amount": 5609259,
@@ -970,6 +950,26 @@
         {
           "abbr": "UU",
           "name": "University of Utah",
+          "role": "awardee"
+        }
+      ]
+    },
+    {
+      "award_id": "2118201",
+      "title": "HDR Institute: Institute for Data Driven Dynamical Design",
+      "amount": 15540749,
+      "start_date": "10/01/2021",
+      "end_date": "09/30/2027",
+      "pi": "Eric Toberer",
+      "co_pis": "Ryan P Adams rpa@princeton.edu; Alvitta Ottley alvitta@wustl.edu; Steven A Lopez s.lopez@northeastern.edu; Adji Bousso Dieng adji@princeton.edu",
+      "agency": "NSF",
+      "office": "OAC",
+      "program": "HDR-Harnessing the Data Revolu, TRIPODS Transdisciplinary Rese, DMR SHORT TERM SUPPORT, PROJECTS",
+      "source_url": "https://www.nsf.gov/awardsearch/showAward?AWD_ID=2118201",
+      "institutions": [
+        {
+          "abbr": "Mines",
+          "name": "Colorado School of Mines",
           "role": "awardee"
         }
       ]
@@ -1045,26 +1045,6 @@
       ]
     },
     {
-      "award_id": "2004510",
-      "title": "Collaborative Research: Frameworks: Ghub as a Community-Driven Data-Model Framework for Ice-Sheet Science",
-      "amount": 162478,
-      "start_date": "10/01/2020",
-      "end_date": "09/30/2025",
-      "pi": "William Lipscomb",
-      "co_pis": "",
-      "agency": "NSF",
-      "office": "OAC",
-      "program": "Software Institutes, ANT Glaciology",
-      "source_url": "https://www.nsf.gov/awardsearch/showAward?AWD_ID=2004510",
-      "institutions": [
-        {
-          "abbr": "NCAR",
-          "name": "NCAR",
-          "role": "awardee"
-        }
-      ]
-    },
-    {
       "award_id": "2008772",
       "title": "OAC Core: Small: Architecture and Network-aware Partitioning Algorithms for Scalable PDE Solvers",
       "amount": 499317,
@@ -1085,21 +1065,21 @@
       ]
     },
     {
-      "award_id": "1931363",
-      "title": "Frameworks: Collaborative Proposal: Software Infrastructure for Transformative Urban Sustainability Research",
-      "amount": 2000338,
-      "start_date": "10/01/2019",
+      "award_id": "2004510",
+      "title": "Collaborative Research: Frameworks: Ghub as a Community-Driven Data-Model Framework for Ice-Sheet Science",
+      "amount": 162478,
+      "start_date": "10/01/2020",
       "end_date": "09/30/2025",
-      "pi": "Shrideep Pallickara",
-      "co_pis": "Jay Breidt breidt-jay@norc.org; Sudipto Ghosh ghosh@cs.colostate.edu; Sangmi L Pallickara sangmi@cs.colostate.edu; Mazdak Arabi Mazdak.Arabi@colostate.edu",
+      "pi": "William Lipscomb",
+      "co_pis": "",
       "agency": "NSF",
       "office": "OAC",
-      "program": "Software Institutes, Data Cyberinfrastructure, Special Initiatives",
-      "source_url": "https://www.nsf.gov/awardsearch/showAward?AWD_ID=1931363",
+      "program": "Software Institutes, ANT Glaciology",
+      "source_url": "https://www.nsf.gov/awardsearch/showAward?AWD_ID=2004510",
       "institutions": [
         {
-          "abbr": "CSU",
-          "name": "Colorado State University",
+          "abbr": "NCAR",
+          "name": "NCAR",
           "role": "awardee"
         }
       ]
@@ -1125,22 +1105,47 @@
       ]
     },
     {
-      "award_id": "2409887",
-      "title": "Collaborative Research: Frameworks: OpenForest4D - A web- based cyberinfrastructure platform for next generation 4D forest mapping and monitoring",
-      "amount": 413467,
+      "award_id": "1931363",
+      "title": "Frameworks: Collaborative Proposal: Software Infrastructure for Transformative Urban Sustainability Research",
+      "amount": 2000338,
+      "start_date": "10/01/2019",
+      "end_date": "09/30/2025",
+      "pi": "Shrideep Pallickara",
+      "co_pis": "Jay Breidt breidt-jay@norc.org; Sudipto Ghosh ghosh@cs.colostate.edu; Sangmi L Pallickara sangmi@cs.colostate.edu; Mazdak Arabi Mazdak.Arabi@colostate.edu",
+      "agency": "NSF",
+      "office": "OAC",
+      "program": "Software Institutes, Data Cyberinfrastructure, Special Initiatives",
+      "source_url": "https://www.nsf.gov/awardsearch/showAward?AWD_ID=1931363",
+      "institutions": [
+        {
+          "abbr": "CSU",
+          "name": "Colorado State University",
+          "role": "awardee"
+        }
+      ]
+    },
+    {
+      "award_id": "2410668",
+      "title": "Collaborative Research: Elements: Autonomous Molecular Design Cyberinfrastructure Development for Quantum Computation",
+      "amount": 299838,
       "start_date": "09/15/2024",
-      "end_date": "08/31/2028",
-      "pi": "Chelsea Scott",
+      "end_date": "08/31/2027",
+      "pi": "Hasan Jamil",
       "co_pis": "",
       "agency": "NSF",
       "office": "OAC",
-      "program": "NDCC-Natl Discvry Cloud Climat",
-      "source_url": "https://www.nsf.gov/awardsearch/showAward?AWD_ID=2409887",
+      "program": "Chem Thry, Mdls & Cmptnl Mthds, Software Institutes, ECR-EDU Core Research",
+      "source_url": "https://www.nsf.gov/awardsearch/showAward?AWD_ID=2410668",
       "institutions": [
         {
-          "abbr": "ASU",
-          "name": "Arizona State University",
+          "abbr": "UI",
+          "name": "University of Idaho",
           "role": "awardee"
+        },
+        {
+          "abbr": "BSU",
+          "name": "Boise State University",
+          "role": "collaborator"
         }
       ]
     },
@@ -1170,27 +1175,22 @@
       ]
     },
     {
-      "award_id": "2410668",
-      "title": "Collaborative Research: Elements: Autonomous Molecular Design Cyberinfrastructure Development for Quantum Computation",
-      "amount": 299838,
+      "award_id": "2409887",
+      "title": "Collaborative Research: Frameworks: OpenForest4D - A web- based cyberinfrastructure platform for next generation 4D forest mapping and monitoring",
+      "amount": 413467,
       "start_date": "09/15/2024",
-      "end_date": "08/31/2027",
-      "pi": "Hasan Jamil",
+      "end_date": "08/31/2028",
+      "pi": "Chelsea Scott",
       "co_pis": "",
       "agency": "NSF",
       "office": "OAC",
-      "program": "Chem Thry, Mdls & Cmptnl Mthds, Software Institutes, ECR-EDU Core Research",
-      "source_url": "https://www.nsf.gov/awardsearch/showAward?AWD_ID=2410668",
+      "program": "NDCC-Natl Discvry Cloud Climat",
+      "source_url": "https://www.nsf.gov/awardsearch/showAward?AWD_ID=2409887",
       "institutions": [
         {
-          "abbr": "UI",
-          "name": "University of Idaho",
+          "abbr": "ASU",
+          "name": "Arizona State University",
           "role": "awardee"
-        },
-        {
-          "abbr": "BSU",
-          "name": "Boise State University",
-          "role": "collaborator"
         }
       ]
     },
@@ -1340,6 +1340,56 @@
       ]
     },
     {
+      "award_id": "2410849",
+      "title": "Collaborative Research: Frameworks: Coupling bulk and surface processes in simulating the solid earth with ASPECT and LandLab",
+      "amount": 780976,
+      "start_date": "09/01/2024",
+      "end_date": "08/31/2028",
+      "pi": "Gregory Tucker",
+      "co_pis": "",
+      "agency": "NSF",
+      "office": "OAC",
+      "program": "Geophysics, GEO CI - GEO Cyberinfrastrctre, NDCC-Natl Discvry Cloud Climat, XC-Crosscutting Activities Pro, Software Institutes",
+      "source_url": "https://www.nsf.gov/awardsearch/showAward?AWD_ID=2410849",
+      "institutions": [
+        {
+          "abbr": "CU Boulder",
+          "name": "University of Colorado Boulder",
+          "role": "awardee"
+        },
+        {
+          "abbr": "NMT",
+          "name": "New Mexico Tech",
+          "role": "collaborator"
+        },
+        {
+          "abbr": "CSU",
+          "name": "Colorado State University",
+          "role": "collaborator"
+        }
+      ]
+    },
+    {
+      "award_id": "2411268",
+      "title": "Collaborative Research: Elements: TUPS: Table Understanding for Paleoclimate Studies",
+      "amount": 171570,
+      "start_date": "09/01/2024",
+      "end_date": "08/31/2027",
+      "pi": "Nicholas McKay",
+      "co_pis": "",
+      "agency": "NSF",
+      "office": "OAC",
+      "program": "Software Institutes, Paleoclimate, GEO CI - GEO Cyberinfrastrctre, NDCC-Natl Discvry Cloud Climat",
+      "source_url": "https://www.nsf.gov/awardsearch/showAward?AWD_ID=2411268",
+      "institutions": [
+        {
+          "abbr": "NAU",
+          "name": "Northern Arizona University",
+          "role": "awardee"
+        }
+      ]
+    },
+    {
       "award_id": "2410850",
       "title": "Collaborative Research: Frameworks: Coupling bulk and surface processes in simulating the solid earth with ASPECT and LandLab",
       "amount": 304934,
@@ -1388,43 +1438,13 @@
           "role": "awardee"
         },
         {
-          "abbr": "CU Boulder",
-          "name": "University of Colorado Boulder",
-          "role": "collaborator"
-        },
-        {
-          "abbr": "NMT",
-          "name": "New Mexico Tech",
-          "role": "collaborator"
-        }
-      ]
-    },
-    {
-      "award_id": "2410849",
-      "title": "Collaborative Research: Frameworks: Coupling bulk and surface processes in simulating the solid earth with ASPECT and LandLab",
-      "amount": 780976,
-      "start_date": "09/01/2024",
-      "end_date": "08/31/2028",
-      "pi": "Gregory Tucker",
-      "co_pis": "",
-      "agency": "NSF",
-      "office": "OAC",
-      "program": "Geophysics, GEO CI - GEO Cyberinfrastrctre, NDCC-Natl Discvry Cloud Climat, XC-Crosscutting Activities Pro, Software Institutes",
-      "source_url": "https://www.nsf.gov/awardsearch/showAward?AWD_ID=2410849",
-      "institutions": [
-        {
-          "abbr": "CU Boulder",
-          "name": "University of Colorado Boulder",
-          "role": "awardee"
-        },
-        {
           "abbr": "NMT",
           "name": "New Mexico Tech",
           "role": "collaborator"
         },
         {
-          "abbr": "CSU",
-          "name": "Colorado State University",
+          "abbr": "CU Boulder",
+          "name": "University of Colorado Boulder",
           "role": "collaborator"
         }
       ]
@@ -1451,26 +1471,6 @@
           "abbr": "CSU",
           "name": "Colorado State University",
           "role": "copi_institution"
-        }
-      ]
-    },
-    {
-      "award_id": "2411268",
-      "title": "Collaborative Research: Elements: TUPS: Table Understanding for Paleoclimate Studies",
-      "amount": 171570,
-      "start_date": "09/01/2024",
-      "end_date": "08/31/2027",
-      "pi": "Nicholas McKay",
-      "co_pis": "",
-      "agency": "NSF",
-      "office": "OAC",
-      "program": "Software Institutes, Paleoclimate, GEO CI - GEO Cyberinfrastrctre, NDCC-Natl Discvry Cloud Climat",
-      "source_url": "https://www.nsf.gov/awardsearch/showAward?AWD_ID=2411268",
-      "institutions": [
-        {
-          "abbr": "NAU",
-          "name": "Northern Arizona University",
-          "role": "awardee"
         }
       ]
     },
@@ -1515,21 +1515,21 @@
       ]
     },
     {
-      "award_id": "2245491",
-      "title": "CRII: OAC: Improved Cyberinfrastructure Usage through High-Fidelity Isogeometric Volumetric Spline Model Generation",
-      "amount": 174996,
+      "award_id": "2311928",
+      "title": "Frameworks: An Advanced Cyberinfrastructure for Atomic, Molecular, and Optical Science (AMOS): Democratizing AMOS for Research and Education",
+      "amount": 2336585,
       "start_date": "09/01/2023",
-      "end_date": "08/31/2026",
-      "pi": "Kendrick Shepherd",
-      "co_pis": "",
+      "end_date": "08/31/2028",
+      "pi": "Kathryn Hamilton",
+      "co_pis": "Klaus R Bartschat klaus.bartschat@drake.edu; Sudhakar V Pamidighantam spamidig@gatech.edu; Nicolas Douguet nicolas.douguet@ucf.edu",
       "agency": "NSF",
       "office": "OAC",
-      "program": "CRII CISE Research Initiation",
-      "source_url": "https://www.nsf.gov/awardsearch/showAward?AWD_ID=2245491",
+      "program": "Software Institutes, PHYSICS AT THE INFO FRONTIER",
+      "source_url": "https://www.nsf.gov/awardsearch/showAward?AWD_ID=2311928",
       "institutions": [
         {
-          "abbr": "BYU",
-          "name": "Brigham Young University",
+          "abbr": "CU Denver",
+          "name": "University of Colorado Denver",
           "role": "awardee"
         }
       ]
@@ -1555,21 +1555,21 @@
       ]
     },
     {
-      "award_id": "2311928",
-      "title": "Frameworks: An Advanced Cyberinfrastructure for Atomic, Molecular, and Optical Science (AMOS): Democratizing AMOS for Research and Education",
-      "amount": 2336585,
+      "award_id": "2245491",
+      "title": "CRII: OAC: Improved Cyberinfrastructure Usage through High-Fidelity Isogeometric Volumetric Spline Model Generation",
+      "amount": 174996,
       "start_date": "09/01/2023",
-      "end_date": "08/31/2028",
-      "pi": "Kathryn Hamilton",
-      "co_pis": "Klaus R Bartschat klaus.bartschat@drake.edu; Sudhakar V Pamidighantam spamidig@gatech.edu; Nicolas Douguet nicolas.douguet@ucf.edu",
+      "end_date": "08/31/2026",
+      "pi": "Kendrick Shepherd",
+      "co_pis": "",
       "agency": "NSF",
       "office": "OAC",
-      "program": "Software Institutes, PHYSICS AT THE INFO FRONTIER",
-      "source_url": "https://www.nsf.gov/awardsearch/showAward?AWD_ID=2311928",
+      "program": "CRII CISE Research Initiation",
+      "source_url": "https://www.nsf.gov/awardsearch/showAward?AWD_ID=2245491",
       "institutions": [
         {
-          "abbr": "CU Denver",
-          "name": "University of Colorado Denver",
+          "abbr": "BYU",
+          "name": "Brigham Young University",
           "role": "awardee"
         }
       ]
@@ -1590,26 +1590,6 @@
         {
           "abbr": "UU",
           "name": "University of Utah",
-          "role": "awardee"
-        }
-      ]
-    },
-    {
-      "award_id": "2321443",
-      "title": "Research Infrastructure: CC* Campus Compute: Next-Generation Shared HPC Cluster to Coordinate Campus Cyberinfrastructure and Accelerate Interdisciplinary Research",
-      "amount": 492652,
-      "start_date": "09/01/2023",
-      "end_date": "08/31/2025",
-      "pi": "Ryan Knutson",
-      "co_pis": "Coltran Hophan-Nichols c.hophannichols@montana.edu",
-      "agency": "NSF",
-      "office": "OAC",
-      "program": "EPSCoR Co-Funding",
-      "source_url": "https://www.nsf.gov/awardsearch/showAward?AWD_ID=2321443",
-      "institutions": [
-        {
-          "abbr": "MSU",
-          "name": "Montana State University",
           "role": "awardee"
         }
       ]
@@ -1640,26 +1620,6 @@
       ]
     },
     {
-      "award_id": "2103621",
-      "title": "Collaborative Research: Frameworks: Seismic COmputational Platform for Empowering Discovery (SCOPED)",
-      "amount": 613397,
-      "start_date": "09/01/2021",
-      "end_date": "08/31/2026",
-      "pi": "Hatice Bozdag",
-      "co_pis": "",
-      "agency": "NSF",
-      "office": "OAC",
-      "program": "XC-Crosscutting Activities Pro, EarthCube, Geophysics",
-      "source_url": "https://www.nsf.gov/awardsearch/showAward?AWD_ID=2103621",
-      "institutions": [
-        {
-          "abbr": "Mines",
-          "name": "Colorado School of Mines",
-          "role": "awardee"
-        }
-      ]
-    },
-    {
       "award_id": "2103511",
       "title": "Collaborative Research: OAC Core: Improving Utilization of High-Performance Computing Systems via Intelligent Co-scheduling",
       "amount": 250298,
@@ -1681,6 +1641,26 @@
           "abbr": "UNM",
           "name": "University of New Mexico",
           "role": "collaborator"
+        }
+      ]
+    },
+    {
+      "award_id": "2103621",
+      "title": "Collaborative Research: Frameworks: Seismic COmputational Platform for Empowering Discovery (SCOPED)",
+      "amount": 613397,
+      "start_date": "09/01/2021",
+      "end_date": "08/31/2026",
+      "pi": "Hatice Bozdag",
+      "co_pis": "",
+      "agency": "NSF",
+      "office": "OAC",
+      "program": "XC-Crosscutting Activities Pro, EarthCube, Geophysics",
+      "source_url": "https://www.nsf.gov/awardsearch/showAward?AWD_ID=2103621",
+      "institutions": [
+        {
+          "abbr": "Mines",
+          "name": "Colorado School of Mines",
+          "role": "awardee"
         }
       ]
     },
@@ -1725,26 +1705,6 @@
       ]
     },
     {
-      "award_id": "2321889",
-      "title": "CC* CIRA: Improving Cyberinfrastructure to Advance Research and Education (ICARE+) Addressing Montana's Digital Equity Gap",
-      "amount": 200000,
-      "start_date": "08/15/2023",
-      "end_date": "07/31/2026",
-      "pi": "Zachary Rossmiller",
-      "co_pis": "",
-      "agency": "NSF",
-      "office": "OAC",
-      "program": "EPSCoR Co-Funding",
-      "source_url": "https://www.nsf.gov/awardsearch/showAward?AWD_ID=2321889",
-      "institutions": [
-        {
-          "abbr": "UMT",
-          "name": "University of Montana",
-          "role": "awardee"
-        }
-      ]
-    },
-    {
       "award_id": "2321843",
       "title": "Equipment: CC* Data Storage: Improving Research Ability with Data Storage at the University of Montana",
       "amount": 499047,
@@ -1756,6 +1716,26 @@
       "office": "OAC",
       "program": "EPSCoR Co-Funding",
       "source_url": "https://www.nsf.gov/awardsearch/showAward?AWD_ID=2321843",
+      "institutions": [
+        {
+          "abbr": "UMT",
+          "name": "University of Montana",
+          "role": "awardee"
+        }
+      ]
+    },
+    {
+      "award_id": "2321889",
+      "title": "CC* CIRA: Improving Cyberinfrastructure to Advance Research and Education (ICARE+) Addressing Montana's Digital Equity Gap",
+      "amount": 200000,
+      "start_date": "08/15/2023",
+      "end_date": "07/31/2026",
+      "pi": "Zachary Rossmiller",
+      "co_pis": "",
+      "agency": "NSF",
+      "office": "OAC",
+      "program": "EPSCoR Co-Funding",
+      "source_url": "https://www.nsf.gov/awardsearch/showAward?AWD_ID=2321889",
       "institutions": [
         {
           "abbr": "UMT",
@@ -2245,26 +2225,6 @@
       ]
     },
     {
-      "award_id": "2115134",
-      "title": "CICI: UCSS: ACSP4HR: Assuring Cyber Security and Privacy for Human Resilience Research: Requirements, Framework, Architecture, Mechanisms and Prototype",
-      "amount": 499094,
-      "start_date": "07/01/2021",
-      "end_date": "06/30/2026",
-      "pi": "Shouhuai Xu",
-      "co_pis": "Charles C Benight benight@uccs.edu; Yanyan Zhuang yzhuang@uccs.edu",
-      "agency": "NSF",
-      "office": "OAC",
-      "program": "Cybersecurity Innovation",
-      "source_url": "https://www.nsf.gov/awardsearch/showAward?AWD_ID=2115134",
-      "institutions": [
-        {
-          "abbr": "UCCS",
-          "name": "University of Colorado Colorado Springs",
-          "role": "awardee"
-        }
-      ]
-    },
-    {
       "award_id": "2115167",
       "title": "CICI:SIVD:Context-Aware Vulnerability Detection in Configurable Scientific Computing Environments",
       "amount": 499834,
@@ -2280,6 +2240,26 @@
         {
           "abbr": "UU",
           "name": "University of Utah",
+          "role": "awardee"
+        }
+      ]
+    },
+    {
+      "award_id": "2115134",
+      "title": "CICI: UCSS: ACSP4HR: Assuring Cyber Security and Privacy for Human Resilience Research: Requirements, Framework, Architecture, Mechanisms and Prototype",
+      "amount": 499094,
+      "start_date": "07/01/2021",
+      "end_date": "06/30/2026",
+      "pi": "Shouhuai Xu",
+      "co_pis": "Charles C Benight benight@uccs.edu; Yanyan Zhuang yzhuang@uccs.edu",
+      "agency": "NSF",
+      "office": "OAC",
+      "program": "Cybersecurity Innovation",
+      "source_url": "https://www.nsf.gov/awardsearch/showAward?AWD_ID=2115134",
+      "institutions": [
+        {
+          "abbr": "UCCS",
+          "name": "University of Colorado Colorado Springs",
           "role": "awardee"
         }
       ]
@@ -2325,26 +2305,6 @@
       ]
     },
     {
-      "award_id": "2009007",
-      "title": "OAC: Small: Data Locality Optimization for Sparse Matrix/Tensor Computations",
-      "amount": 499391,
-      "start_date": "07/01/2020",
-      "end_date": "06/30/2025",
-      "pi": "Ponnuswamy Sadayappan",
-      "co_pis": "",
-      "agency": "NSF",
-      "office": "OAC",
-      "program": "OAC-Advanced Cyberinfrast Core",
-      "source_url": "https://www.nsf.gov/awardsearch/showAward?AWD_ID=2009007",
-      "institutions": [
-        {
-          "abbr": "UU",
-          "name": "University of Utah",
-          "role": "awardee"
-        }
-      ]
-    },
-    {
       "award_id": "2004658",
       "title": "Elements: Open Access Data Generation Engine for Bulk Power System under Extreme Windstorms",
       "amount": 498032,
@@ -2356,6 +2316,26 @@
       "office": "OAC",
       "program": "EPCN-Energy-Power-Ctrl-Netwrks, CDS&E, Software Institutes",
       "source_url": "https://www.nsf.gov/awardsearch/showAward?AWD_ID=2004658",
+      "institutions": [
+        {
+          "abbr": "UU",
+          "name": "University of Utah",
+          "role": "awardee"
+        }
+      ]
+    },
+    {
+      "award_id": "2009007",
+      "title": "OAC: Small: Data Locality Optimization for Sparse Matrix/Tensor Computations",
+      "amount": 499391,
+      "start_date": "07/01/2020",
+      "end_date": "06/30/2025",
+      "pi": "Ponnuswamy Sadayappan",
+      "co_pis": "",
+      "agency": "NSF",
+      "office": "OAC",
+      "program": "OAC-Advanced Cyberinfrast Core",
+      "source_url": "https://www.nsf.gov/awardsearch/showAward?AWD_ID=2009007",
       "institutions": [
         {
           "abbr": "UU",
@@ -2481,6 +2461,11 @@
           "abbr": "CSU",
           "name": "Colorado State University",
           "role": "awardee"
+        },
+        {
+          "abbr": "CU Boulder",
+          "name": "University of Colorado Boulder",
+          "role": "copi_institution"
         }
       ]
     },
@@ -2825,22 +2810,27 @@
       ]
     },
     {
-      "award_id": "2232915",
-      "title": "CICI: TCR: Improving the Robustness of Cyberinfrastructure via Scalable Vulnerability Discovery and Mitigation on \"Big Binaries\"",
-      "amount": 1199998,
+      "award_id": "2229603",
+      "title": "Collaborative Research: CyberTraining: Implementation: Medium: CyberTraining of Construction (CyCon) Research Workforce Through an Educational and Community Engagement Platform",
+      "amount": 640166,
       "start_date": "01/01/2023",
       "end_date": "12/31/2026",
-      "pi": "Ruoyu Wang",
-      "co_pis": "Yan Shoshitaishvili yans@asu.edu",
+      "pi": "Abbas Rashidi",
+      "co_pis": "Cynthia Furse cfurse@ece.utah.edu",
       "agency": "NSF",
       "office": "OAC",
-      "program": "Cybersecurity Innovation",
-      "source_url": "https://www.nsf.gov/awardsearch/showAward?AWD_ID=2232915",
+      "program": "CyberTraining - Training-based",
+      "source_url": "https://www.nsf.gov/awardsearch/showAward?AWD_ID=2229603",
       "institutions": [
         {
-          "abbr": "ASU",
-          "name": "Arizona State University",
+          "abbr": "UU",
+          "name": "University of Utah",
           "role": "awardee"
+        },
+        {
+          "abbr": "UI",
+          "name": "University of Idaho",
+          "role": "collaborator"
         }
       ]
     },
@@ -2865,27 +2855,22 @@
       ]
     },
     {
-      "award_id": "2229603",
-      "title": "Collaborative Research: CyberTraining: Implementation: Medium: CyberTraining of Construction (CyCon) Research Workforce Through an Educational and Community Engagement Platform",
-      "amount": 640166,
+      "award_id": "2230108",
+      "title": "Collaborative Research: CyberTraining: CIP: A Cross-Institutional Research Engagement Network for CI Facilitators",
+      "amount": 2499405,
       "start_date": "01/01/2023",
-      "end_date": "12/31/2026",
-      "pi": "Abbas Rashidi",
-      "co_pis": "Cynthia Furse cfurse@ece.utah.edu",
+      "end_date": "12/31/2027",
+      "pi": "Gil Speyer",
+      "co_pis": "Marisa Brazil marisa.brazil@asu.edu",
       "agency": "NSF",
       "office": "OAC",
-      "program": "CyberTraining - Training-based",
-      "source_url": "https://www.nsf.gov/awardsearch/showAward?AWD_ID=2229603",
+      "program": "CYBERINFRASTRUCTURE",
+      "source_url": "https://www.nsf.gov/awardsearch/showAward?AWD_ID=2230108",
       "institutions": [
         {
-          "abbr": "UU",
-          "name": "University of Utah",
+          "abbr": "ASU",
+          "name": "Arizona State University",
           "role": "awardee"
-        },
-        {
-          "abbr": "UI",
-          "name": "University of Idaho",
-          "role": "collaborator"
         }
       ]
     },
@@ -2915,17 +2900,17 @@
       ]
     },
     {
-      "award_id": "2230108",
-      "title": "Collaborative Research: CyberTraining: CIP: A Cross-Institutional Research Engagement Network for CI Facilitators",
-      "amount": 2499405,
+      "award_id": "2232915",
+      "title": "CICI: TCR: Improving the Robustness of Cyberinfrastructure via Scalable Vulnerability Discovery and Mitigation on \"Big Binaries\"",
+      "amount": 1199998,
       "start_date": "01/01/2023",
-      "end_date": "12/31/2027",
-      "pi": "Gil Speyer",
-      "co_pis": "Marisa Brazil marisa.brazil@asu.edu",
+      "end_date": "12/31/2026",
+      "pi": "Ruoyu Wang",
+      "co_pis": "Yan Shoshitaishvili yans@asu.edu",
       "agency": "NSF",
       "office": "OAC",
-      "program": "CYBERINFRASTRUCTURE",
-      "source_url": "https://www.nsf.gov/awardsearch/showAward?AWD_ID=2230108",
+      "program": "Cybersecurity Innovation",
+      "source_url": "https://www.nsf.gov/awardsearch/showAward?AWD_ID=2232915",
       "institutions": [
         {
           "abbr": "ASU",
@@ -3115,8 +3100,8 @@
       "program": "Software Institutes, GEO CI - GEO Cyberinfrastrctre, NDCC-Natl Discvry Cloud Climat, XC-Crosscutting Activities Pro, Geophysics",
       "institutions": [
         "CSU",
-        "CU Boulder",
-        "NMT"
+        "NMT",
+        "CU Boulder"
       ],
       "num_institutions": 3,
       "connection_type": "collaborative"
@@ -3221,6 +3206,20 @@
       "connection_type": "collaborative"
     },
     {
+      "award_id": "2346713",
+      "title": "CC* CIRA: Bridging the Digital Chasm HPC for ALL",
+      "amount": 200000,
+      "start_date": "05/01/2024",
+      "end_date": "04/30/2026",
+      "program": "Campus Cyberinfrastructure",
+      "institutions": [
+        "CSU",
+        "CU Boulder"
+      ],
+      "num_institutions": 2,
+      "connection_type": "copi"
+    },
+    {
       "award_id": "2103918",
       "title": "Collaborative Research: Frameworks: OpenEarthscape - Transformative Cyberinfrastructure for Modeling and Simulation in the Earth-Surface Science Communities",
       "amount": 135508,
@@ -3279,9 +3278,9 @@
   ],
   "summary": {
     "total_institutions": 41,
-    "total_grants": 117,
-    "cross_institutional_count": 24,
-    "total_funding": 116479516,
+    "total_grants": 116,
+    "cross_institutional_count": 25,
+    "total_funding": 115986864,
     "window_start": "05/01/2025",
     "window_end": "04/30/2026"
   }
