@@ -137,7 +137,7 @@ NAME_ALIASES = {
 # PI names guaranteed to be captured by a targeted PI-name search in Phase 3.
 # Add any PI whose grants must not be missed (format: (last_name, first_name)).
 PRIORITY_PIS = [
-    ("Knuth", "Shelley"),
+    ("Knuth", "Shelley", "CU Boulder"),
 ]
 
 # Email domain → RMACC abbreviation (root domain only; subdomains are stripped before lookup)
@@ -504,6 +504,17 @@ def _process_award(conn, cursor, inst_lookup, existing, award):
                     (grant_row[0], copi_inst_id),
                 )
 
+        co_pis_lower = co_pis.lower()
+        for pi_last, _pi_first, pi_inst in PRIORITY_PIS:
+            if pi_last.lower() in co_pis_lower and pi_inst != resolved:
+                copi_inst_id = inst_lookup.get(pi_inst)
+                if copi_inst_id:
+                    cursor.execute(
+                        "INSERT OR IGNORE INTO grant_institutions "
+                        "(grant_id, institution_id, role) VALUES (?, ?, 'copi_institution')",
+                        (grant_row[0], copi_inst_id),
+                    )
+
     return added
 
 
@@ -602,7 +613,7 @@ def collect_grants(conn, window_start="05/01/2025", window_end="04/30/2026"):
     # ── Phase 3: Priority PI name searches ────────────────────────
     print(f"  Phase 3: Priority PI searches ({len(PRIORITY_PIS)} PIs)...", flush=True)
     phase3_new = 0
-    for pi_last, pi_first in PRIORITY_PIS:
+    for pi_last, pi_first, _pi_inst in PRIORITY_PIS:
         print(f"  Searching PI: {pi_first} {pi_last}", flush=True)
         pi_awards = query_nsf({**BASE_PARAMS, "piLastName": pi_last, "piFirstName": pi_first},
                               label=f"[P3:{pi_last}]")

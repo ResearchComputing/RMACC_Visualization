@@ -719,6 +719,27 @@ class TestProcessAward(unittest.TestCase):
         self.assertIn("CU Boulder", roles)
         self.assertEqual(roles["CU Boulder"], "copi_institution")
 
+    def test_priority_pi_linked_as_copi_by_name(self):
+        """When a priority PI's last name appears in co_pis, their institution is linked even if email doesn't resolve."""
+        award = _make_award("PP001", "Colorado State University")
+        award["coPDPI"] = "Shelley Knuth shelley.knuth@someunresolvable.org"
+        _process_award(self.conn, self.cursor, self.inst_lookup, self.existing, award)
+        self.conn.commit()
+        roles = self._roles_for("PP001")
+        self.assertIn("CU Boulder", roles, "CU Boulder should be linked via Knuth name match")
+        self.assertEqual(roles["CU Boulder"], "copi_institution")
+
+    def test_priority_pi_name_match_skipped_when_awardee(self):
+        """Name-based match should not self-link when priority PI's institution is the awardee."""
+        award = _make_award("PP002", "University of Colorado Boulder")
+        award["coPDPI"] = "Shelley Knuth shelley.knuth@someunresolvable.org"
+        _process_award(self.conn, self.cursor, self.inst_lookup, self.existing, award)
+        self.conn.commit()
+        roles = self._roles_for("PP002")
+        self.assertEqual(roles.get("CU Boulder"), "awardee", "CU Boulder should be awardee only, not also copi")
+        cub_entries = [r for abbr, r in roles.items() if abbr == "CU Boulder"]
+        self.assertEqual(len(cub_entries), 1, "CU Boulder should appear exactly once")
+
 
 # ─────────────────────────────────────────────────────────────────
 # Supplemental collection passes
@@ -800,10 +821,10 @@ class TestSupplementalCollection(unittest.TestCase):
         self.assertEqual(cur.fetchone()[0], 1)
 
     def test_priority_pis_includes_knuth(self):
-        """PRIORITY_PIS must include Shelley Knuth."""
-        knuth_entries = [(l, f) for l, f in PRIORITY_PIS if l == "Knuth" and f == "Shelley"]
+        """PRIORITY_PIS must include Shelley Knuth with CU Boulder as home institution."""
+        knuth_entries = [(l, f, inst) for l, f, inst in PRIORITY_PIS if l == "Knuth" and f == "Shelley"]
         self.assertGreater(len(knuth_entries), 0, "Shelley Knuth must be in PRIORITY_PIS")
-
+        self.assertEqual(knuth_entries[0][2], "CU Boulder")
 
 if __name__ == "__main__":
     unittest.main(verbosity=2)
