@@ -1,0 +1,675 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>RMACC Member Institutions &amp; NSF OAC Grants</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.8.5/d3.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/topojson/3.0.2/topojson.min.js"></script>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+    background: #0a0e1a;
+    color: #e0e0e0;
+    overflow-x: hidden;
+  }
+  header { text-align: center; padding: 24px 20px 8px; }
+  header h1 { font-size: 1.6rem; font-weight: 700; color: #fff; letter-spacing: 0.5px; }
+  header p { font-size: 0.9rem; color: #8899bb; margin-top: 4px; }
+
+  .controls {
+    display: flex; justify-content: center; gap: 12px; flex-wrap: wrap;
+    padding: 10px 20px 6px; font-size: 0.8rem;
+  }
+  .ctrl-btn {
+    background: #1a2240; border: 1px solid #2a3a60; color: #aabbdd;
+    padding: 5px 14px; border-radius: 16px; cursor: pointer;
+    font-size: 0.78rem; transition: all 0.2s;
+  }
+  .ctrl-btn:hover { background: #243060; color: #fff; }
+  .ctrl-btn.active { background: #2a4080; border-color: #4a6aaa; color: #fff; }
+
+  .legend {
+    display: flex; justify-content: center; gap: 18px; flex-wrap: wrap;
+    padding: 8px 20px 4px; font-size: 0.78rem;
+  }
+  .legend-item {
+    display: flex; align-items: center; gap: 6px;
+    cursor: pointer; opacity: 0.85; transition: opacity 0.2s;
+  }
+  .legend-item:hover { opacity: 1; }
+  .legend-item.dimmed { opacity: 0.3; }
+  .legend-dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
+
+  .main-layout { display: flex; max-width: 1300px; margin: 0 auto; }
+  #map-container { flex: 1; position: relative; min-width: 0; }
+  svg { display: block; width: 100%; height: auto; }
+
+  .state { fill: #151c2e; stroke: #2a3550; stroke-width: 0.7; transition: fill 0.2s; }
+  .state.highlighted { fill: #1e2844; }
+
+  .member-dot { cursor: pointer; transition: r 0.15s, filter 0.15s; }
+  .member-dot:hover { filter: brightness(1.4) drop-shadow(0 0 6px currentColor); }
+  .member-dot.dimmed { opacity: 0.12; }
+  .member-dot.grant-highlight { filter: brightness(1.3) drop-shadow(0 0 8px currentColor); }
+  .member-dot.inst-selected { stroke: #fff !important; stroke-width: 2.5 !important; filter: brightness(1.4) drop-shadow(0 0 10px rgba(255,255,255,0.5)); }
+  .inst-filter-header { padding: 8px 12px; background: #1a2240; border-bottom: 1px solid #2a3550; font-size: 0.8rem; color: #a0b4d0; display: flex; justify-content: space-between; align-items: center; }
+  .inst-filter-header strong { color: #e8eeff; }
+  .inst-clear-btn { background: none; border: none; color: #667799; cursor: pointer; font-size: 1rem; line-height: 1; padding: 0 2px; }
+  .inst-clear-btn:hover { color: #a0b4d0; }
+
+  .grant-line {
+    fill: none; stroke-linecap: round; cursor: pointer;
+    transition: opacity 0.2s, stroke-width 0.2s;
+  }
+  .grant-line:hover { opacity: 0.9 !important; }
+  .grant-line.dimmed { opacity: 0.05 !important; }
+  .grant-line.copi { stroke: #64b5f6; }
+
+  .tooltip {
+    position: absolute; pointer-events: none;
+    background: #1a2240; border: 1px solid #3a4a70; border-radius: 8px;
+    padding: 10px 14px; font-size: 0.82rem; line-height: 1.45;
+    max-width: 320px; box-shadow: 0 8px 30px rgba(0,0,0,0.5);
+    opacity: 0; transition: opacity 0.15s; z-index: 10;
+  }
+  .tooltip.visible { opacity: 1; }
+  .tooltip .name { font-weight: 700; font-size: 0.9rem; color: #fff; margin-bottom: 2px; }
+  .tooltip .detail { color: #8899bb; font-size: 0.8rem; }
+  .tooltip .type-badge {
+    display: inline-block; font-size: 0.7rem; padding: 2px 7px; border-radius: 10px;
+    margin-top: 3px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px;
+  }
+
+  #sidebar {
+    width: 340px; flex-shrink: 0; background: #111828;
+    border-left: 1px solid #1e2844; overflow-y: auto;
+    max-height: 620px; padding: 16px;
+  }
+  #sidebar h2 { font-size: 0.95rem; color: #aabbdd; margin-bottom: 12px; font-weight: 600; }
+  .grant-card {
+    background: #1a2240; border: 1px solid #253050; border-radius: 8px;
+    padding: 10px 12px; margin-bottom: 8px; cursor: pointer;
+    transition: all 0.2s; font-size: 0.78rem;
+  }
+  .grant-card:hover { border-color: #4a6aaa; background: #1e2a50; }
+  .grant-card.active { border-color: #ff8a65; background: #1e2a4a; }
+  .grant-card .award-id { color: #ff8a65; font-weight: 700; font-size: 0.75rem; }
+  .grant-card .title { color: #dde; margin: 3px 0; line-height: 1.35; }
+  .grant-card .meta { color: #667799; font-size: 0.72rem; }
+  .grant-card .institutions {
+    display: flex; flex-wrap: wrap; gap: 4px; margin-top: 5px;
+  }
+  .grant-card .inst-tag {
+    background: #253060; color: #8899cc; padding: 1px 6px;
+    border-radius: 8px; font-size: 0.68rem;
+  }
+
+  .stats-bar {
+    display: flex; justify-content: center; gap: 36px;
+    padding: 10px 20px 16px; flex-wrap: wrap;
+  }
+  .stat { text-align: center; }
+  .stat .num { font-size: 1.4rem; font-weight: 700; color: #fff; }
+  .stat .label { font-size: 0.75rem; color: #667799; margin-top: 2px; }
+
+  .note {
+    text-align: center; padding: 0 20px 24px;
+    color: #445577; font-size: 0.75rem; max-width: 800px; margin: 0 auto;
+  }
+
+  #map-container { position: relative; }
+  #zoom-controls {
+    position: absolute; top: 10px; right: 10px;
+    display: flex; flex-direction: column; gap: 4px; z-index: 5;
+  }
+  .zoom-btn {
+    width: 28px; height: 28px; background: #1a2240cc; border: 1px solid #2a3550;
+    color: #a0b4d0; border-radius: 5px; cursor: pointer; font-size: 1rem;
+    display: flex; align-items: center; justify-content: center;
+    transition: background 0.15s, color 0.15s;
+  }
+  .zoom-btn:hover { background: #253060; color: #fff; }
+  svg { cursor: grab; }
+  svg:active { cursor: grabbing; }
+
+  @media (max-width: 900px) {
+    .main-layout { flex-direction: column; }
+    #sidebar { width: 100%; max-height: 300px; border-left: none; border-top: 1px solid #1e2844; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>RMACC Member Institutions &amp; NSF OAC Grants</h1>
+  <p>Rocky Mountain Advanced Computing Consortium &mdash; Active NSF OAC Grants (May 2025 &ndash; Apr 2026)</p>
+</header>
+
+<div class="controls" id="controls">
+  <button class="ctrl-btn active" onclick="toggleView('all')">All Grants</button>
+  <button class="ctrl-btn" onclick="toggleView('cc')">CC* Awards</button>
+  <button class="ctrl-btn" onclick="toggleView('oac')">OAC Core / CRII</button>
+</div>
+
+<div class="legend" id="legend"></div>
+
+<div class="main-layout">
+  <div id="map-container">
+    <svg id="map" viewBox="0 0 960 600"></svg>
+    <div id="zoom-controls">
+      <button class="zoom-btn" onclick="zoomBy(1.5)" title="Zoom in">+</button>
+      <button class="zoom-btn" onclick="zoomBy(1/1.5)" title="Zoom out">−</button>
+      <button class="zoom-btn" onclick="resetZoom()" title="Reset zoom" style="font-size:0.75rem">⌂</button>
+    </div>
+    <div class="tooltip" id="tooltip"></div>
+  </div>
+  <div id="sidebar">
+    <h2>NSF OAC Awards at RMACC Institutions</h2>
+    <div id="grant-list"></div>
+  </div>
+</div>
+
+<div class="stats-bar" id="stats-bar"></div>
+<div class="note">
+  Showing grants active May 2025&ndash;Apr 2026 (data collected via NSF Awards API; no vintage cutoff). Scroll or pinch to zoom &middot; drag to pan &middot; click a dot to filter by institution &middot; hover lines for details.
+</div>
+
+<script>
+// ── RMACC MEMBER DATA ──────────────────────────────────────────
+const members = [
+  { name: "Arizona State University", abbr: "ASU", lat: 33.4242, lon: -111.9281, state: "AZ", type: "R1 University" },
+  { name: "Arizona Western College", abbr: "AWC", lat: 32.6927, lon: -114.6153, state: "AZ", type: "Community College" },
+  { name: "Grand Canyon University", abbr: "GCU", lat: 33.5088, lon: -112.1254, state: "AZ", type: "University" },
+  { name: "Northern Arizona University", abbr: "NAU", lat: 35.1886, lon: -111.6530, state: "AZ", type: "University" },
+  { name: "Pima Community College", abbr: "PCC", lat: 32.2828, lon: -110.9465, state: "AZ", type: "Community College" },
+  { name: "University of Arizona", abbr: "UA", lat: 32.2319, lon: -110.9501, state: "AZ", type: "R1 University" },
+  { name: "Colorado Mesa University", abbr: "CMU", lat: 39.0839, lon: -108.5507, state: "CO", type: "University" },
+  { name: "Colorado School of Mines", abbr: "Mines", lat: 39.7514, lon: -105.2225, state: "CO", type: "R1 University" },
+  { name: "Colorado State University", abbr: "CSU", lat: 40.5734, lon: -105.0866, state: "CO", type: "R1 University" },
+  { name: "Colorado State University Pueblo", abbr: "CSUP", lat: 38.2847, lon: -104.6234, state: "CO", type: "University" },
+  { name: "Denver Botanic Gardens", abbr: "DBG", lat: 39.7320, lon: -104.9594, state: "CO", type: "Research Org" },
+  { name: "University of Denver", abbr: "DU", lat: 39.6765, lon: -104.9619, state: "CO", type: "R1 University" },
+  { name: "MSU Denver", abbr: "MSUD", lat: 39.7447, lon: -105.0074, state: "CO", type: "University" },
+  { name: "Morgan Community College", abbr: "MCC", lat: 40.2503, lon: -103.7998, state: "CO", type: "Community College" },
+  { name: "NCAR", abbr: "NCAR", lat: 39.9780, lon: -105.2755, state: "CO", type: "Federal Lab" },
+  { name: "National Jewish Health", abbr: "NJH", lat: 39.7392, lon: -104.9394, state: "CO", type: "Research Org" },
+  { name: "NOAA", abbr: "NOAA", lat: 40.0394, lon: -105.2547, state: "CO", type: "Federal Agency" },
+  { name: "NREL", abbr: "NREL", lat: 39.7408, lon: -105.1694, state: "CO", type: "Federal Lab" },
+  { name: "Regis University", abbr: "Regis", lat: 39.7879, lon: -105.0239, state: "CO", type: "University" },
+  { name: "University of Colorado Anschutz", abbr: "CU Anschutz", lat: 39.7464, lon: -104.8378, state: "CO", type: "Medical Campus" },
+  { name: "University of Colorado Boulder", abbr: "CU Boulder", lat: 40.0076, lon: -105.2659, state: "CO", type: "R1 University" },
+  { name: "University of Colorado Colorado Springs", abbr: "UCCS", lat: 38.8940, lon: -104.8014, state: "CO", type: "University" },
+  { name: "University of Colorado Denver", abbr: "CU Denver", lat: 39.7457, lon: -105.0072, state: "CO", type: "University" },
+  { name: "University of Northern Colorado", abbr: "UNCO", lat: 40.4050, lon: -104.6975, state: "CO", type: "University" },
+  { name: "USGS", abbr: "USGS", lat: 39.7163, lon: -105.1130, state: "CO", type: "Federal Agency" },
+  { name: "Western Colorado University", abbr: "Western", lat: 38.5449, lon: -106.9253, state: "CO", type: "University" },
+  { name: "Boise State University", abbr: "BSU", lat: 43.6021, lon: -116.2048, state: "ID", type: "R1 University" },
+  { name: "Idaho National Lab", abbr: "INL", lat: 43.5168, lon: -112.0340, state: "ID", type: "Federal Lab" },
+  { name: "Idaho State University", abbr: "ISU", lat: 42.8638, lon: -112.4326, state: "ID", type: "University" },
+  { name: "University of Idaho", abbr: "UI", lat: 46.7262, lon: -117.0142, state: "ID", type: "R1 University" },
+  { name: "Montana State University", abbr: "MSU", lat: 45.6671, lon: -111.0497, state: "MT", type: "R1 University" },
+  { name: "University of Montana", abbr: "UMT", lat: 46.8625, lon: -113.9847, state: "MT", type: "R1 University" },
+  { name: "University of Nevada, Las Vegas", abbr: "UNLV", lat: 36.1080, lon: -115.1403, state: "NV", type: "R1 University" },
+  { name: "New Mexico State University", abbr: "NMSU", lat: 32.2814, lon: -106.7477, state: "NM", type: "R1 University" },
+  { name: "New Mexico Tech", abbr: "NMT", lat: 34.0654, lon: -106.9060, state: "NM", type: "University" },
+  { name: "University of New Mexico", abbr: "UNM", lat: 35.0844, lon: -106.6189, state: "NM", type: "R1 University" },
+  { name: "Columbia College", abbr: "CC", lat: 39.7400, lon: -104.9870, state: "CO", type: "College" },
+  { name: "Brigham Young University", abbr: "BYU", lat: 40.2518, lon: -111.6493, state: "UT", type: "R1 University" },
+  { name: "University of Utah", abbr: "UU", lat: 40.7649, lon: -111.8421, state: "UT", type: "R1 University" },
+  { name: "Washington State University", abbr: "WSU", lat: 46.7298, lon: -117.1817, state: "WA", type: "R1 University" },
+  { name: "University of Wyoming", abbr: "UWyo", lat: 41.3149, lon: -105.5666, state: "WY", type: "R1 University" },
+];
+
+// ── COLORS ────────────────────────────────────────────────────
+const typeColors = {
+  "R1 University": "#4fc3f7", "University": "#81c784",
+  "Community College": "#ffb74d", "Federal Lab": "#f06292",
+  "Federal Agency": "#ba68c8", "Research Org": "#fff176",
+  "Medical Campus": "#4dd0e1", "College": "#a5d6a7",
+};
+
+const memberStates = new Set(members.map(m => m.state));
+const typeCounts = {};
+members.forEach(m => { typeCounts[m.type] = (typeCounts[m.type] || 0) + 1; });
+const activeTypes = new Set(Object.keys(typeColors));
+
+// ── LEGEND ────────────────────────────────────────────────────
+const legendEl = document.getElementById("legend");
+Object.entries(typeColors).forEach(([type, color]) => {
+  if (!typeCounts[type]) return;
+  const item = document.createElement("div");
+  item.className = "legend-item";
+  item.innerHTML = `<span class="legend-dot" style="background:${color}"></span>${type} (${typeCounts[type]})`;
+  item.addEventListener("click", () => {
+    if (activeTypes.has(type)) activeTypes.delete(type); else activeTypes.add(type);
+    item.classList.toggle("dimmed");
+    if (window.updateDots) window.updateDots();
+  });
+  legendEl.appendChild(item);
+});
+const lineItem = document.createElement("div");
+lineItem.className = "legend-item";
+lineItem.innerHTML = `<span class="legend-dot" style="background:#ff8a65;border-radius:2px;width:20px;height:3px"></span>Collaborative Award`;
+legendEl.appendChild(lineItem);
+
+const copiItem = document.createElement("div");
+copiItem.className = "legend-item";
+copiItem.innerHTML = `<span style="display:inline-block;width:20px;height:3px;background:#64b5f6;border-radius:2px;flex-shrink:0;background-image:repeating-linear-gradient(to right,#64b5f6 0,#64b5f6 5px,transparent 5px,transparent 9px)"></span>&nbsp;Co-PI Connection`;
+legendEl.appendChild(copiItem);
+
+// ── STATE ─────────────────────────────────────────────────────
+let grants = [];
+let currentView = "all";
+let selectedInstitution = null;
+let activeGrantId = null;
+let projected = [];
+let currentZoomScale = 1;
+let currentMaxAmt = 1;
+
+// Window dates are set from the JSON summary after load.
+// "Active" = grant period overlaps [windowStart, windowEnd].
+let windowStart = null;
+let windowEnd   = null;
+
+function parseGrantDate(s) {
+  if (!s) return null;
+  const [m, d, y] = s.split('/');
+  return new Date(+y, +m - 1, +d);
+}
+
+function isActiveInWindow(g) {
+  if (!windowStart || !windowEnd) return true;
+  const s = parseGrantDate(g.start_date);
+  const e = parseGrantDate(g.end_date);
+  if (!s || !e) return true;
+  return s <= windowEnd && e >= windowStart;
+}
+
+function dotRadius()         { return 5 / currentZoomScale; }
+function dotStroke(selected) { return (selected ? 2.5 : 1.5) / currentZoomScale; }
+function lineWidth(d) {
+  const base = d.connection_type === 'copi'
+    ? 1.2 + 2.5 * (d.amount / currentMaxAmt)
+    : 1.5 + 3.5 * (d.amount / currentMaxAmt);
+  return base / currentZoomScale;
+}
+
+// ── DATA TRANSFORM ────────────────────────────────────────────
+function transformGrant(g) {
+  const year = g.start_date ? parseInt(g.start_date.split('/')[2]) : 0;
+  const prog = g.program || '';
+  const roles = (g.institutions || []).map(i => i.role);
+  const connection_type = roles.includes('collaborator') ? 'collaborative'
+                        : roles.includes('copi_institution') ? 'copi'
+                        : null;
+  return {
+    id: g.award_id,
+    title: g.title,
+    amount: g.amount || 0,
+    year,
+    start_date: g.start_date || '',
+    end_date: g.end_date || '',
+    program: prog,
+    pi: g.pi || '',
+    pi_last: (g.pi || '').trim().split(/\s+/).pop() || '',
+    source_url: g.source_url || '',
+    institutions: g.institutions.map(i => i.abbr),
+    category: prog.includes('Campus Cyberinfrastructure') ? 'cc' : 'oac',
+    connection_type,
+  };
+}
+
+// ── CROSS-INSTITUTIONAL CONNECTIONS ───────────────────────────
+function getGrantConnections(grantList) {
+  const connections = [];
+  grantList.forEach(g => {
+    if (g.institutions.length >= 2) {
+      for (let i = 0; i < g.institutions.length; i++) {
+        for (let j = i + 1; j < g.institutions.length; j++) {
+          connections.push({
+            from: g.institutions[i], to: g.institutions[j],
+            amount: g.amount, title: g.title, id: g.id,
+            program: g.program, year: g.year,
+            connection_type: g.connection_type,
+          });
+        }
+      }
+    }
+  });
+  return connections;
+}
+
+// ── VIEW FILTER ───────────────────────────────────────────────
+function getFilteredGrants() {
+  let result = grants;
+  if (currentView === "cc")  result = result.filter(g => g.category === "cc");
+  if (currentView === "oac") result = result.filter(g => g.category === "oac");
+  if (selectedInstitution)   result = result.filter(g => g.institutions.includes(selectedInstitution));
+  return result;
+}
+
+function toggleView(view) {
+  currentView = view;
+  selectedInstitution = null;
+  activeGrantId = null;
+  document.querySelectorAll(".ctrl-btn").forEach(b => b.classList.remove("active"));
+  document.querySelector(`.ctrl-btn[onclick="toggleView('${view}')"]`).classList.add("active");
+  highlightGrant(null);
+  updateDotSelection();
+  renderSidebar();
+  renderGrantLines();
+}
+
+function selectInstitution(abbr) {
+  selectedInstitution = selectedInstitution === abbr ? null : abbr;
+  activeGrantId = null;
+  highlightGrant(null);
+  updateDotSelection();
+  renderSidebar();
+  renderGrantLines();
+}
+
+function updateDotSelection() {
+  d3.select("#member-dots").selectAll(".member-dot")
+    .classed("inst-selected", d => d.abbr === selectedInstitution)
+    .attr("stroke", d => d.abbr === selectedInstitution ? "#ffffff" : "#0a0e1a")
+    .attr("stroke-width", d => dotStroke(d.abbr === selectedInstitution));
+}
+
+function resetZoom() {
+  svg.transition().duration(400).call(zoom.transform, d3.zoomIdentity);
+}
+
+function zoomBy(factor) {
+  svg.transition().duration(250).call(zoom.scaleBy, factor);
+}
+
+// ── SIDEBAR ───────────────────────────────────────────────────
+function renderSidebar() {
+  const grantListEl = document.getElementById("grant-list");
+  grantListEl.innerHTML = '';
+
+  if (selectedInstitution) {
+    const header = document.createElement("div");
+    header.className = "inst-filter-header";
+    header.innerHTML = `<span>Grants for <strong>${selectedInstitution}</strong></span><button class="inst-clear-btn" onclick="selectInstitution('${selectedInstitution}')" title="Clear filter">✕</button>`;
+    grantListEl.appendChild(header);
+  }
+
+  getFilteredGrants().slice().sort((a, b) => {
+    if (b.amount !== a.amount) return b.amount - a.amount;
+    return (a.pi_last || '').localeCompare(b.pi_last || '');
+  }).forEach(g => {
+    const card = document.createElement("div");
+    card.className = "grant-card";
+    card.dataset.grantId = g.id;
+    const amtStr = g.amount >= 1e6
+      ? "$" + (g.amount / 1e6).toFixed(1) + "M"
+      : "$" + (g.amount / 1e3).toFixed(0) + "K";
+    const linkHtml = g.source_url
+      ? `<a href="${g.source_url}" target="_blank" rel="noopener"
+           style="color:#ff8a65;font-size:0.68rem;float:right" onclick="event.stopPropagation()">NSF ↗</a>`
+      : '';
+    card.innerHTML = `
+      <div class="award-id">#${g.id} &middot; ${g.year} &middot; ${amtStr}${linkHtml}</div>
+      <div class="title">${g.title}</div>
+      <div class="meta">${g.pi ? g.pi + ' &middot; ' : ''}${g.program}</div>
+      <div class="institutions">${g.institutions.map(i => `<span class="inst-tag">${i}</span>`).join("")}</div>
+    `;
+    card.addEventListener("click", () => {
+      activeGrantId = activeGrantId === g.id ? null : g.id;
+      document.querySelectorAll(".grant-card").forEach(c =>
+        c.classList.toggle("active", c.dataset.grantId === activeGrantId));
+      highlightGrant(activeGrantId);
+    });
+    grantListEl.appendChild(card);
+  });
+}
+
+// ── STATS ─────────────────────────────────────────────────────
+function renderStats(summary) {
+  const statsEl = document.getElementById("stats-bar");
+  statsEl.innerHTML = '';
+  [
+    { num: members.length, label: "Member Institutions" },
+    { num: summary.total_grants, label: "OAC Awards" },
+    { num: summary.cross_institutional_count, label: "Cross-Institutional" },
+    { num: "$" + (summary.total_funding / 1e6).toFixed(1) + "M", label: "Total Funding" },
+  ].forEach(s => {
+    const d = document.createElement("div"); d.className = "stat";
+    d.innerHTML = `<div class="num">${s.num}</div><div class="label">${s.label}</div>`;
+    statsEl.appendChild(d);
+  });
+}
+
+// ── MAP CONSTANTS ─────────────────────────────────────────────
+const svg = d3.select("#map");
+// Projection and path are defined inside Promise.all after regional states are known
+let projection, path, zoom;
+
+// FIPS codes for states with RMACC members + Oregon (geographic context for ID/WA)
+const RMACC_FIPS = new Set(["04","08","16","30","32","35","41","49","53","56"]);
+const fipsToAbbr = {
+  "01":"AL","02":"AK","04":"AZ","05":"AR","06":"CA","08":"CO","09":"CT","10":"DE",
+  "11":"DC","12":"FL","13":"GA","15":"HI","16":"ID","17":"IL","18":"IN","19":"IA",
+  "20":"KS","21":"KY","22":"LA","23":"ME","24":"MD","25":"MA","26":"MI","27":"MN",
+  "28":"MS","29":"MO","30":"MT","31":"NE","32":"NV","33":"NH","34":"NJ","35":"NM",
+  "36":"NY","37":"NC","38":"ND","39":"OH","40":"OK","41":"OR","42":"PA","44":"RI",
+  "45":"SC","46":"SD","47":"TN","48":"TX","49":"UT","50":"VT","51":"VA","53":"WA",
+  "54":"WV","55":"WI","56":"WY"
+};
+const tooltip = document.getElementById("tooltip");
+
+// ── GRANT LINES ───────────────────────────────────────────────
+function renderGrantLines() {
+  const linesGroup = d3.select("#grant-lines");
+  linesGroup.selectAll("*").remove();
+  const connections = getGrantConnections(getFilteredGrants());
+  const memberByAbbr = {};
+  projected.forEach(m => { if (m.visible) memberByAbbr[m.abbr] = m; });
+  currentMaxAmt = d3.max(connections, d => d.amount) || 1;
+
+  linesGroup.selectAll("path")
+    .data(connections.filter(d => memberByAbbr[d.from] && memberByAbbr[d.to]))
+    .join("path")
+    .attr("class", d => `grant-line${d.connection_type === 'copi' ? ' copi' : ''}`)
+    .attr("d", d => {
+      const s = memberByAbbr[d.from], t = memberByAbbr[d.to];
+      const dx = t.x - s.x, dy = t.y - s.y;
+      const dist = Math.sqrt(dx*dx + dy*dy);
+      const curve = Math.min(dist * 0.3, 60);
+      const mx = (s.x + t.x) / 2 - dy * 0.15;
+      const my = (s.y + t.y) / 2 + dx * 0.15 - curve * 0.5;
+      return `M${s.x},${s.y} Q${mx},${my} ${t.x},${t.y}`;
+    })
+    .attr("stroke", d => d.connection_type === 'copi' ? "#64b5f6" : "#ff8a65")
+    .attr("stroke-dasharray", d => d.connection_type === 'copi' ? "6,4" : null)
+    .attr("stroke-width", d => lineWidth(d))
+    .attr("opacity", 0.45)
+    .on("mouseenter", (e, d) => {
+      d3.select(e.target).attr("opacity", 0.9)
+        .attr("stroke-width", lineWidth(d) + 2 / currentZoomScale);
+      const amtStr = d.amount >= 1e6
+        ? "$" + (d.amount / 1e6).toFixed(1) + "M"
+        : "$" + (d.amount / 1e3).toFixed(0) + "K";
+      const typeLabel = d.connection_type === 'copi'
+        ? '<span style="color:#64b5f6">Co-PI link</span>'
+        : '<span style="color:#ff8a65">Collaborative award</span>';
+      tooltip.innerHTML = `
+        <div class="name">${d.title}</div>
+        <div class="detail">${d.from} ↔ ${d.to} &middot; ${amtStr} &middot; ${d.year}</div>
+        <div class="detail">${d.program} &middot; ${typeLabel}</div>
+      `;
+      tooltip.classList.add("visible");
+    })
+    .on("mousemove", (e) => {
+      const rect = document.getElementById("map-container").getBoundingClientRect();
+      const x = e.clientX - rect.left + 14, y = e.clientY - rect.top - 10;
+      tooltip.style.left = (x + 300 > rect.width ? x - 320 : x) + "px";
+      tooltip.style.top = y + "px";
+    })
+    .on("mouseleave", (e, d) => {
+      d3.select(e.target).attr("opacity", 0.45).attr("stroke-width", lineWidth(d));
+      tooltip.classList.remove("visible");
+    });
+}
+
+function highlightGrant(grantId) {
+  if (!grantId) {
+    d3.selectAll(".grant-line").classed("dimmed", false).attr("opacity", 0.45);
+    d3.selectAll(".member-dot").classed("grant-highlight", false);
+    return;
+  }
+  const grant = grants.find(g => g.id === grantId);
+  if (!grant) return;
+  const instSet = new Set(grant.institutions);
+  d3.selectAll(".grant-line")
+    .classed("dimmed", d => d.id !== grantId)
+    .attr("opacity", d => d.id === grantId ? 0.8 : 0.05);
+  d3.selectAll(".member-dot")
+    .classed("grant-highlight", d => instSet.has(d.abbr));
+}
+
+// ── LOAD DATA & RENDER ────────────────────────────────────────
+Promise.all([
+  fetch('rmacc_grants.json').then(r => r.json()),
+  d3.json("https://cdn.jsdelivr.net/npm/us-atlas@3/states-10m.json"),
+]).then(([grantData, us]) => {
+  // Set window from JSON so the visualization always matches the collected data
+  if (grantData.summary.window_start) windowStart = parseGrantDate(grantData.summary.window_start);
+  if (grantData.summary.window_end)   windowEnd   = parseGrantDate(grantData.summary.window_end);
+
+  // Update subtitle to reflect actual window
+  if (grantData.summary.window_start && grantData.summary.window_end) {
+    const fmt = d => { const [m,,y] = d.split('/'); return ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'][+m-1] + ' ' + y; };
+    document.querySelector('header p').textContent =
+      `Rocky Mountain Advanced Computing Consortium — Active NSF OAC Grants (${fmt(grantData.summary.window_start)} – ${fmt(grantData.summary.window_end)})`;
+  }
+
+  grants = grantData.grants.map(transformGrant).filter(isActiveInWindow);
+  const activeFunding = grants.reduce((sum, g) => sum + g.amount, 0);
+  const activeConnections = new Set(
+    grants.filter(g => g.institutions.length >= 2).map(g => g.id)
+  ).size;
+  renderSidebar();
+  renderStats({
+    total_grants: grants.length,
+    cross_institutional_count: activeConnections,
+    total_funding: activeFunding,
+  });
+
+  // Build regional map — only states with RMACC members (+ Oregon for context)
+  const allStates = topojson.feature(us, us.objects.states);
+  const regionalFeatures = allStates.features.filter(d =>
+    RMACC_FIPS.has(String(d.id).padStart(2, "0"))
+  );
+  const regionalCollection = { type: "FeatureCollection", features: regionalFeatures };
+
+  // Albers conic fitted to the regional extent; parallels bracket the lat range
+  projection = d3.geoAlbers()
+    .parallels([33, 45])
+    .rotate([111, 0])
+    .fitExtent([[40, 30], [920, 570]], regionalCollection);
+  path = d3.geoPath().projection(projection);
+
+  // All map content lives in one group so d3.zoom can transform it as a unit
+  const mapContent = svg.append("g").attr("id", "map-content");
+
+  // State fills
+  mapContent.append("g").selectAll("path").data(regionalFeatures).join("path")
+    .attr("d", path)
+    .attr("class", d => {
+      const abbr = fipsToAbbr[d.id] || fipsToAbbr[String(d.id).padStart(2, "0")];
+      return "state" + (memberStates.has(abbr) ? " highlighted" : "");
+    });
+
+  // Internal state borders (only between shown states)
+  mapContent.append("path")
+    .datum(topojson.mesh(us, us.objects.states,
+      (a, b) => a !== b &&
+        RMACC_FIPS.has(String(a.id).padStart(2, "0")) &&
+        RMACC_FIPS.has(String(b.id).padStart(2, "0"))
+    ))
+    .attr("fill", "none").attr("stroke", "#2a3550").attr("stroke-width", 0.7).attr("d", path);
+
+  // Outer boundary of the region
+  mapContent.append("path")
+    .datum(topojson.merge(us, us.objects.states.geometries.filter(d =>
+      RMACC_FIPS.has(String(d.id).padStart(2, "0"))
+    )))
+    .attr("fill", "none").attr("stroke", "#3a4a60").attr("stroke-width", 1.2).attr("d", path);
+
+  mapContent.append("g").attr("id", "grant-lines");
+  const dotsGroup = mapContent.append("g").attr("id", "member-dots");
+
+  // Project member coordinates using fitted regional projection
+  // No collision nudge — true geographic positions are used so zooming in reveals
+  // accurate relative placement (e.g. Boulder north of Denver).
+  projected = members.map(m => {
+    const p = projection([m.lon, m.lat]);
+    return { ...m, x: p ? p[0] : 0, y: p ? p[1] : 0, visible: !!p };
+  });
+
+  dotsGroup.selectAll("circle")
+    .data(projected.filter(d => d.visible))
+    .join("circle")
+    .attr("class", "member-dot")
+    .attr("cx", d => d.x).attr("cy", d => d.y)
+    .attr("r", dotRadius())
+    .attr("fill", d => typeColors[d.type] || "#ccc")
+    .attr("stroke", "#0a0e1a").attr("stroke-width", dotStroke(false))
+    .on("mouseenter", (e, d) => {
+      d3.select(e.target).transition().duration(100).attr("r", dotRadius() * 2);
+      tooltip.innerHTML = `
+        <div class="name">${d.name}</div>
+        <div class="detail">${d.state}</div>
+        <div class="type-badge" style="background:${typeColors[d.type]}22;color:${typeColors[d.type]};border:1px solid ${typeColors[d.type]}55">${d.type}</div>
+      `;
+      tooltip.classList.add("visible");
+    })
+    .on("mousemove", (e) => {
+      const rect = document.getElementById("map-container").getBoundingClientRect();
+      const x = e.clientX - rect.left + 14, y = e.clientY - rect.top - 10;
+      tooltip.style.left = (x + 260 > rect.width ? x - 280 : x) + "px";
+      tooltip.style.top = y + "px";
+    })
+    .on("mouseleave", (e) => {
+      d3.select(e.target).transition().duration(100).attr("r", dotRadius());
+      tooltip.classList.remove("visible");
+    })
+    .on("click", (e, d) => {
+      tooltip.classList.remove("visible");
+      selectInstitution(d.abbr);
+    });
+
+  window.updateDots = () => {
+    dotsGroup.selectAll(".member-dot").classed("dimmed", d => !activeTypes.has(d.type));
+  };
+
+  // ── ZOOM ──────────────────────────────────────────────────────
+  zoom = d3.zoom()
+    .scaleExtent([1, 12])
+    .translateExtent([[0, 0], [960, 600]])
+    .on("zoom", e => {
+      mapContent.attr("transform", e.transform);
+      currentZoomScale = e.transform.k;
+      d3.select("#member-dots").selectAll(".member-dot")
+        .attr("r", dotRadius())
+        .attr("stroke-width", d => dotStroke(d.abbr === selectedInstitution));
+      d3.select("#grant-lines").selectAll(".grant-line")
+        .attr("stroke-width", d => lineWidth(d));
+    });
+
+  svg.call(zoom);
+
+  renderGrantLines();
+}).catch(err => {
+  console.error('Failed to load data:', err);
+  document.getElementById("grant-list").innerHTML =
+    '<p style="color:#667799;padding:12px">Failed to load grant data.<br>Serve via HTTP: <code>python3 -m http.server</code></p>';
+});
+</script>
+</body>
+</html>

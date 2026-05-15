@@ -1,0 +1,46 @@
+name: Refresh Grant Data
+
+on:
+  workflow_dispatch:
+    inputs:
+      window_start:
+        description: 'Window start date (MM/DD/YYYY)'
+        required: false
+        default: '05/01/2025'
+        type: string
+      window_end:
+        description: 'Window end date (MM/DD/YYYY)'
+        required: false
+        default: '04/30/2026'
+        type: string
+
+jobs:
+  refresh:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    steps:
+      - name: Check out repo
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Collect grants
+        run: |
+          python rmacc_nsf_collector.py \
+            --export \
+            --window-start "${{ inputs.window_start }}" \
+            --window-end "${{ inputs.window_end }}"
+
+      - name: Commit updated data
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add rmacc_grants.json
+          git diff --staged --quiet && echo "No changes to commit." && exit 0
+          git commit -m "Refresh grant data: ${{ inputs.window_start }} – ${{ inputs.window_end }}"
+          git push
